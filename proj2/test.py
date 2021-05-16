@@ -5,6 +5,18 @@ from Loss_function import MSELoss
 from Optimizer import SGD
 from Sequential import Sequential
 
+def plot_result(input_data, target, model_name):
+    """
+    plot the points and the predicted result
+    param input_data: points with x and y
+    param target: predicted result
+    """
+    plt.scatter(input_data [:,0],input_data [:,1],c=target)
+    # set x and y axis equal
+    plt.axis("equal")
+     #Saving the plot
+    plt.savefig(model_name+'randompoint_target.png')
+    plt.show()
 
 def generate_set(num):
     """
@@ -126,7 +138,7 @@ def train_model(model, train_input, train_target, test_input, test_target, learn
     # Saving the plot
     # ax2.figure.savefig('accuracy.png')
     plt.savefig(model.model_name + 'accuracy_loss.png')
-
+    plt.show()
 
 def compute_accuracy(true_target, predicted):
     return (true_target - (predicted > 0.5).float()).eq(0).float().mean().item()
@@ -164,6 +176,10 @@ if __name__ == "__main__":
     model = Sequential(layers,'model1')
 
     train_model(model, train_input, train_target,test_input, test_target, learning_rate, batch_size, n_epochs, loss=MSELoss())
+    # draw the predicting plot
+    # set the threshold to 0.5
+    test_pred_1 = (model(test_input) > 0.5).float()
+    plot_result(test_input, test_pred_1, 'model1')
 
     # train the model with Tanh as the activation function
     layers_2 = [
@@ -182,6 +198,10 @@ if __name__ == "__main__":
 
     train_model(model_2, train_input, train_target, test_input, test_target, learning_rate, batch_size, n_epochs,
                 loss=MSELoss())
+    # draw the predicting plot
+    # set the threshold to 0.5
+    test_pred_2 = (model_2(test_input) > 0.5).float()
+    plot_result(test_input, test_pred_2, 'model2')
 
     learning_rate_3 = [(0.1, 0)]
     # train the model with Sigmois as the activation function
@@ -202,3 +222,7 @@ if __name__ == "__main__":
 
     train_model(model_3, train_input, train_target, test_input, test_target, learning_rate_3, batch_size, n_epochs,
                 loss=MSELoss())
+    # draw the predicting plot
+    # set the threshold to 0.5
+    test_pred_3 = (model_3(test_input) > 0.5).float()
+    plot_result(test_input, test_pred_3, 'model3')
