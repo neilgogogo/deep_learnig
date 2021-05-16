@@ -1,22 +1,42 @@
 import math
+import time
 import torch
 import matplotlib.pyplot as plt
 from Loss_function import MSELoss
 from Optimizer import SGD
 from Sequential import Sequential
 
-def plot_result(input_data, target, model_name):
+
+def plot_result(input_data, pred, true_label, model_name):
     """
     plot the points and the predicted result
     param input_data: points with x and y
-    param target: predicted result
+    param pred: predicted result
+    param target: the true label
+    return the image drawing the predicted result
     """
-    plt.scatter(input_data [:,0],input_data [:,1],c=target)
-    # set x and y axis equal
+    # 0 is the error predicted, 1 is the correct predicted
+    error_data = (pred - true_label).eq(0).float()
+    # in pred, 0 is outside the circle, 1 is inside the circle.
+    # after +1: 1 is outside the circle, 2 is inside the circle.
+    # after mul: 1 is outside the circle, 2 is inside the circle, 0 is false predicted
+    target = (pred + 1).mul(error_data)
+    #     fig, ax = plt.subplots()
+    cdict = {1: 'green', 2: 'blue', 0: 'red'}
+    label_dict = {1: 'Outside the circle', 2: 'Inside the circle', 0: 'Error'}
+    fig, ax = plt.subplots()
+    for g in torch.unique(target):
+        ix = torch.where(target.view(target.shape[0]) == g)
+        ax.scatter(input_data[:, 0][ix],
+                   input_data[:, 1][ix],
+                   c=cdict[g.item()],
+                   label=label_dict[g.item()])
+
+    ax.legend()
     plt.axis("equal")
-     #Saving the plot
-    plt.savefig(model_name+'randompoint_target.png')
-    plt.show()
+    plt.savefig(model_name + 'randompoint_target.png')
+    # plt.show()
+    # plt.close(fig)
 
 def generate_set(num):
     """
@@ -50,6 +70,8 @@ def train_model(model, train_input, train_target, test_input, test_target, learn
     :return: my_loss: (list) values of loss along the epochs
     """
     # train model
+    # time record
+    start_time = time.time()
     train_loss_history = []
     train_accuracy = []
     test_loss_history = []
@@ -69,7 +91,7 @@ def train_model(model, train_input, train_target, test_input, test_target, learn
             model.zero_grad()
             output = model(train_input[n_start: n_start + batch_size])
             # accumulating the loss over the mini-batches
-            loss_= loss(output, train_target[n_start: n_start + batch_size]) * batch_size
+            loss_ = loss(output, train_target[n_start: n_start + batch_size]) * batch_size
             cumulative_loss += loss_
             # calculating the gradient of the loss wrt final outputs
             loss_grad = loss.backward(output, train_target[n_start: n_start + batch_size])
@@ -77,7 +99,7 @@ def train_model(model, train_input, train_target, test_input, test_target, learn
             model.backward(loss_grad)
             # updating the parameters
             sgd.step()
-            print(model.model_name,' | Epoch: %03d/%03d | Batch %03d/%03d | Loss: %.6f'
+            print(model.model_name, ' | Epoch: %03d/%03d | Batch %03d/%03d | Loss: %.6f'
                   % (epoch + 1, epoch, n_start,
                      len(train_input), loss_))
 
@@ -96,17 +118,17 @@ def train_model(model, train_input, train_target, test_input, test_target, learn
         test_accuracy.append(test_accuracy_result)
 
         # Printing the results of the current iteration
-        # Printing the results of the current iteration
         print(model.model_name,
               " :the average training loss at epoch {} is {}".format(epoch + 1, (cumulative_loss / sample_size)),
               end='\r')
     print("\r")
+    print('Total Training Time: %.2f min' % ((time.time() - start_time) / 60))
     print("The final train accuracy is", compute_accuracy(train_target, train_pred))
     print("The final test accuracy is ", compute_accuracy(test_target, test_pred))
     # Plotting the train and test loss and accuracy figure
 
     # Setting-up the plot
-    plt.figure(figsize=(15, 8))
+    fig=plt.figure(figsize=(15, 8))
 
     ax1 = plt.subplot(1, 2, 1)
 
@@ -122,8 +144,8 @@ def train_model(model, train_input, train_target, test_input, test_target, learn
     ax1.set_xlabel('Epoch')
     ax1.legend()
 
-    # Saving the plot
-    # ax1.figure.savefig('loss.png')
+    #     #Saving the plot
+    #     ax1.figure.savefig(model.model_name+'loss.png')
 
     # Drawing and labeling the curves
     ax2.plot(train_accuracy, label="Train Accuracy")
@@ -136,9 +158,15 @@ def train_model(model, train_input, train_target, test_input, test_target, learn
     ax2.legend()
 
     # Saving the plot
-    # ax2.figure.savefig('accuracy.png')
+    #     ax2.figure.savefig(model.model_name+'accuracy.png')
     plt.savefig(model.model_name + 'accuracy_loss.png')
-    plt.show()
+    # plt.show()
+    # plt.close(fig)
+
+
+def compute_accuracy(true_target, predicted):
+    return (true_target - (predicted > 0.5).float()).eq(0).float().mean().item()
+
 
 def compute_accuracy(true_target, predicted):
     return (true_target - (predicted > 0.5).float()).eq(0).float().mean().item()
@@ -150,11 +178,11 @@ if __name__ == "__main__":
 
     sample_size = 1000
     batch_size=25
-    n_epochs=2500
+    n_epochs=250
     # when the traing begin, the learning rate is 0.1;
     # After 200 epoch, the learning rate becomes 0.03
     # Then after 1000 epoch, the learning rate becomes 0.01
-    learning_rate=[(0.1,0),(0.03,200),(0.01,1000)]
+    learning_rate=[(0.1,0),(0.03,200),(0.01,200)]
 
 
     train_input, train_target = generate_set(sample_size)
@@ -179,7 +207,7 @@ if __name__ == "__main__":
     # draw the predicting plot
     # set the threshold to 0.5
     test_pred_1 = (model(test_input) > 0.5).float()
-    plot_result(test_input, test_pred_1, 'model1')
+    plot_result(test_input, test_pred_1, test_target, 'model1')
 
     # train the model with Tanh as the activation function
     layers_2 = [
@@ -201,7 +229,7 @@ if __name__ == "__main__":
     # draw the predicting plot
     # set the threshold to 0.5
     test_pred_2 = (model_2(test_input) > 0.5).float()
-    plot_result(test_input, test_pred_2, 'model2')
+    plot_result(test_input, test_pred_2, test_target, 'model2')
 
     learning_rate_3 = [(0.1, 0)]
     # train the model with Sigmois as the activation function
@@ -225,4 +253,4 @@ if __name__ == "__main__":
     # draw the predicting plot
     # set the threshold to 0.5
     test_pred_3 = (model_3(test_input) > 0.5).float()
-    plot_result(test_input, test_pred_3, 'model3')
+    plot_result(test_input, test_pred_3, test_target, 'model3')
