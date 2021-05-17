@@ -23,9 +23,10 @@ class Tanh(Module):
     The derivative of tanh(x) is 1 - tanh(x) ** 2
     """
     def forward(self, x):
-        ex = torch.exp(x)
-        esx = torch.exp(-x)
-        self.y = (ex - esx) / (ex + esx)
+        # ex = torch.exp(x)
+        # esx = torch.exp(-x)
+        # self.y = (ex - esx) / (ex + esx)
+        self.y=torch.tanh(x)
         return self.y
 
     def backward(self, eta):
@@ -37,8 +38,9 @@ class Sigmoid(Module):
     The derivative of Sigmoid(x) is Sigmoid(x)(1-Sigmoid(x))
     """
     def forward(self, x):
-        self.x=x
-        self.y=1/(1+torch.exp(-x))
+        # self.x=x
+        # self.y=1/(1+torch.exp(-x))
+        self.y = torch.sigmoid(x)
         return self.y
     def backward(self, eta):
         return eta*(self.y*(1-self.y))

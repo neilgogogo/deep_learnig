@@ -171,7 +171,6 @@ def compute_accuracy(true_target, predicted):
     return (true_target - (predicted > 0.5).float()).eq(0).float().mean().item()
 
 
-
 if __name__ == "__main__":
 
 
@@ -231,12 +230,12 @@ if __name__ == "__main__":
     plot_result(test_input, test_pred_2, test_target, 'model2')
 
     learning_rate_3 = [(0.1, 0)]
-    # train the model with Sigmois as the activation function
+    # train the model with Sigmoid as the activation function
     layers_3 = [
         {'type': 'Linear', 'shape': (2, 25)},
         {'type': 'Tanh'},
         {'type': 'Linear', 'shape': (25, 25)},
-        {'type': 'Tanh'},
+        {'type': 'Sigmoid'},
         {'type': 'Linear', 'shape': (25, 25)},
         {'type': 'Sigmoid'},
         {'type': 'Linear', 'shape': (25, 25)},
