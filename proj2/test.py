@@ -98,9 +98,10 @@ def train_model(model, train_input, train_target, test_input, test_target, learn
             model.backward(loss_grad)
             # updating the parameters
             sgd.step()
-            print(model.model_name, ' | Epoch: %03d/%03d | Batch %03d/%03d | Loss: %.6f'
-                  % (epoch + 1, epoch, n_start,
-                     len(train_input), loss_))
+            if(n_start%500==0):
+                print(model.model_name, ' | Epoch: %03d/%03d | Batch %03d/%03d | Loss: %.6f'
+                      % (epoch + 1, epoch, n_start,
+                         len(train_input), loss_))
 
         # get the training loss and accuracy
         train_pred = model(train_input)
