@@ -45,9 +45,9 @@ class Linear(Module):
         # Returns tensor of size N * in_features, computes gradient wrt the weights
 
         self.weights.grad += torch.mm(self.x.t(), grad_output)
-        #         torch.mm(a,b)
+
         grad_input = torch.mm(grad_output, self.weights.data.t())
-        #         grad_input = grad_output.matmul(self.weights.data.t())
+
 
         if self.bias is not None:
             self.bias.grad += torch.einsum('ij->j', grad_output)

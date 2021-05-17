@@ -21,7 +21,6 @@ def plot_result(input_data, pred, true_label, model_name):
     # after +1: 1 is outside the circle, 2 is inside the circle.
     # after mul: 1 is outside the circle, 2 is inside the circle, 0 is false predicted
     target = (pred + 1).mul(error_data)
-    #     fig, ax = plt.subplots()
     cdict = {1: 'green', 2: 'blue', 0: 'red'}
     label_dict = {1: 'Outside the circle', 2: 'Inside the circle', 0: 'Error'}
     fig, ax = plt.subplots()
@@ -122,9 +121,9 @@ def train_model(model, train_input, train_target, test_input, test_target, learn
               " :the average training loss at epoch {} is {}".format(epoch + 1, (cumulative_loss / sample_size)),
               end='\r')
     print("\r")
-    print('Total Training Time: %.2f min' % ((time.time() - start_time) / 60))
-    print("The final train accuracy is", compute_accuracy(train_target, train_pred))
-    print("The final test accuracy is ", compute_accuracy(test_target, test_pred))
+    print(model.model_name,'Total Training Time: %.2f min' % ((time.time() - start_time) / 60))
+    print(model.model_name,"The final train accuracy is", compute_accuracy(train_target, train_pred))
+    print(model.model_name,"The final test accuracy is ", compute_accuracy(test_target, test_pred))
     # Plotting the train and test loss and accuracy figure
 
     # Setting-up the plot
@@ -177,12 +176,12 @@ if __name__ == "__main__":
 
 
     sample_size = 1000
-    batch_size=25
+    batch_size=50
     n_epochs=250
     # when the traing begin, the learning rate is 0.1;
-    # After 200 epoch, the learning rate becomes 0.03
-    # Then after 1000 epoch, the learning rate becomes 0.01
-    learning_rate=[(0.1,0),(0.03,200),(0.01,200)]
+    # After 100 epoch, the learning rate becomes 0.03
+    # Then after 175 epoch, the learning rate becomes 0.01
+    learning_rate=[(0.1,0),(0.03,100),(0.01,175)]
 
 
     train_input, train_target = generate_set(sample_size)

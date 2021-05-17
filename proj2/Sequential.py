@@ -15,7 +15,6 @@ class Sequential(Module):
         for config in layer_configures:
             self.layers.append(self.createLayer(config))
 
-    #         self.layers = layers
 
     def createLayer(self, config):
         t = config['type']
