@@ -20,7 +20,7 @@ class MLP_Net(nn.Module):
         self.batch_size = 20
         self.criterion = nn.CrossEntropyLoss()
         self.num_epochs = 25
-        self.optimizer = torch.optim.Adam(self.parameters(), lr=1e-3)
+        self.optimizer = torch.optim.Adam(self.parameters(), lr=2e-3)
 
     def forward(self, x):
         x = F.relu(self.linear1(x.view(-1, 2 * 14 * 14)))
@@ -159,7 +159,7 @@ class CNN_Net(nn.Module):
         self.batch_size = 50
         self.criterion = nn.CrossEntropyLoss()
         self.num_epochs = 25
-        self.optimizer = torch.optim.Adam(self.parameters(), lr=1e-3)
+        self.optimizer = torch.optim.Adam(self.parameters(), lr=3e-3)
 
     def forward(self, x):
         x = F.relu(F.max_pool2d(self.bn1(self.conv1(x)), kernel_size=2, stride=2))
@@ -295,7 +295,7 @@ class CNN_one_by_one_Net(nn.Module):
         self.batch_size = 50
         self.criterion = nn.CrossEntropyLoss()
         self.num_epochs = 25
-        self.optimizer = torch.optim.Adam(self.parameters(), lr=1e-3)
+        self.optimizer = torch.optim.Adam(self.parameters(), lr=2e-3)
 
     def forward(self, x):
         x = self.conv1(x)
@@ -572,7 +572,7 @@ class CNN_Net_weight_sharing(nn.Module):
         self.batch_size = 50
         self.criterion = nn.CrossEntropyLoss()
         self.num_epochs = 25
-        self.optimizer = torch.optim.Adam(self.parameters(), lr=1e-3)
+        self.optimizer = torch.optim.Adam(self.parameters(), lr=2e-3)
 
     def forward(self, x):
 
@@ -720,7 +720,7 @@ class CNN_Net_weight_sharing_auxiliary_loss(nn.Module):
         self.batch_size = 50
         self.criterion = nn.CrossEntropyLoss()
         self.num_epochs = 25
-        self.optimizer = torch.optim.Adam(self.parameters(), lr=1e-4)
+        self.optimizer = torch.optim.Adam(self.parameters(), lr=3e-3)
 
     def forward(self, x):
         #         print(x.shape)
