@@ -4,7 +4,7 @@ import dlc_practical_prologue as prologue
 #Sometimes download directly will have http403 error
 from six.moves import urllib
 # have to add a header to your urllib request (due to that site moving to Cloudflare protection)
-from Nets import MLP_Net, CNN_Net, CNN_one_by_one_Net, ResNet, CNN_Net_weight_sharing, \
+from Nets import MLP_Net, CNN_Net, CNN_one_by_one_Net,  CNN_Net_weight_sharing, \
     CNN_Net_weight_sharing_auxiliary_loss
 
 opener = urllib.request.build_opener()
@@ -82,26 +82,6 @@ if __name__ == "__main__":
         train_errors_3.append(my_model_3.compare_two_digit(train_input, train_target))
         test_errors_3.append(my_model_3.compare_two_digit(test_input, test_target))
 
-
-    #####################################################################################
-    ######################################ResNet#########################################
-    #####################################################################################
-
-    # calculate the standard deviation:
-    train_errors_4 = []
-    test_errors_4 = []
-    for num in range(10):
-        N_PAIRS = 1000
-        train_input, train_target, train_classes, test_input, test_target, test_classes = prologue.generate_pair_sets(
-            N_PAIRS)
-        my_model_4 = ResNet()
-        # train the model
-        my_model_4.trainer(train_input, train_target, test_input, test_target)
-        train_errors_4.append(my_model_4.compute_error(train_input, train_target))
-        test_errors_4.append(my_model_4.compute_error(test_input, test_target))
-
-
-
     #####################################################################################
     #############################weights_sharing_CNN#####################################
     #####################################################################################
@@ -155,12 +135,6 @@ if __name__ == "__main__":
     print('CNN to compare on by one: The mean of train error: ', np.mean(train_errors_3))
     print('CNN to compare on by one: The mean of test error:', np.mean(test_errors_3))
     print("CNN to compare on by one: The total number of the parameters is: %d" % (sum(p.numel() for p in my_model_3.parameters())))
-    print('*******************************')
-    print('ResNet: The standard deviation of train error:', np.std(train_errors_4))
-    print('ResNet: The standard deviation of test error:', np.std(test_errors_4))
-    print('ResNet: The mean of train error: ', np.mean(train_errors_4))
-    print('ResNet: The mean of test error:', np.mean(test_errors_4))
-    print("ResNet: The total number of the parameters is: %d" % (sum(p.numel() for p in my_model_4.parameters())))
     print('*******************************')
     print('weights_sharing_CNN: The standard deviation of train error:', np.std(train_errors_5))
     print('weights_sharing_CNN: The standard deviation of test error:', np.std(test_errors_5))
