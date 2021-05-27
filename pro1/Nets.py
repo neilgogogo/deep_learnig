@@ -54,15 +54,15 @@ class MLP_Net(nn.Module):
                 loss.backward()  # backpropagation
                 self.optimizer.step()
                 # print the loss in every 50 epoch
-                if not batch_idx % 50:
-                    print('Epoch: %03d/%03d | Batch %03d/%03d | Loss: %.6f'
+                if not batch_idx % 500:
+                    print('Model 1: MLP | Epoch: %03d/%03d | Batch %03d/%03d | Loss: %.6f'
                           % (epoch + 1, self.num_epochs, batch_idx,
                              len(train_input), loss))
             # test mode
             self.eval()
             # get the training loss and accuracy
             train_predicted = self(train_input)
-            train_loss = self.criterion(train_predicted, train_target)
+            train_loss = self.criterion(train_predicted, train_target).item()
             train_loss_history.append(train_loss)
             _, train_pred = torch.max(train_predicted, 1)  # return the index of the bigger result
             train_accuracy_result = self.compute_accuracy(train_target, train_pred)
@@ -70,7 +70,7 @@ class MLP_Net(nn.Module):
 
             # get the testing loss and accuracy
             test_predicted = self(test_input)
-            test_loss = self.criterion(test_predicted, test_target)
+            test_loss = self.criterion(test_predicted, test_target).item()
             test_loss_history.append(test_loss)
             _, test_pred = torch.max(test_predicted, 1)  # return the index of the bigger result
             test_accuracy_result = self.compute_accuracy(test_target, test_pred)
@@ -81,34 +81,36 @@ class MLP_Net(nn.Module):
         #       print the total training time used
         print('Total Training Time: %.2f min' % ((time.time() - start_time) / 60))
 
-        # # Setting-up the plot
-        # plt.figure(figsize=(15, 8))
-        #
-        # ax1 = plt.subplot(1, 2, 1)
-        #
-        # ax2 = plt.subplot(1, 2, 2)
-        #
-        # # Drawing and labeling the curves
-        # ax1.plot(train_loss_history, label="Training Loss")
-        # ax1.plot(test_loss_history, label="Test Loss")
-        #
-        # # Adding the title and axis labels
-        # ax1.set_title('Train VS Test Loss')
-        # ax1.set_ylabel('Loss')
-        # ax1.set_xlabel('Epoch')
-        # ax1.legend()
-        #
-        # #     #Saving the plot
-        #
-        # # Drawing and labeling the curves
-        # ax2.plot(train_accuracy, label="Train Accuracy")
-        # ax2.plot(test_accuracy, label="Test Accuracy")
-        #
-        # # Adding the title and axis labels
-        # ax2.set_title('Train VS Test Accuracy')
-        # ax2.set_ylabel('Accuracy')
-        # ax2.set_xlabel('Epoch')
-        # ax2.legend()
+        # Setting-up the plot
+        plt.figure(figsize=(15, 8))
+
+        ax1 = plt.subplot(1, 2, 1)
+
+        ax2 = plt.subplot(1, 2, 2)
+
+        # Drawing and labeling the curves
+        ax1.plot(train_loss_history, label="Training Loss")
+        ax1.plot(test_loss_history, label="Test Loss")
+
+        # Adding the title and axis labels
+        ax1.set_title('Train VS Test Loss')
+        ax1.set_ylabel('Loss')
+        ax1.set_xlabel('Epoch')
+        ax1.legend()
+
+        #     #Saving the plot
+
+        # Drawing and labeling the curves
+        ax2.plot(train_accuracy, label="Train Accuracy")
+        ax2.plot(test_accuracy, label="Test Accuracy")
+
+        # Adding the title and axis labels
+        ax2.set_title('Train VS Test Accuracy')
+        ax2.set_ylabel('Accuracy')
+        ax2.set_xlabel('Epoch')
+        ax2.legend()
+        plt.savefig('./figure/model1_loss_accuracy.png')
+
 
         # Test error
 
@@ -194,8 +196,8 @@ class CNN_Net(nn.Module):
                 loss.backward()  # backpropagation
                 self.optimizer.step()
                 #                 # print the loss in every 50 epoch
-                if not batch_idx % 50:
-                    print('Epoch: %03d/%03d | Batch %03d/%03d | Loss: %.6f'
+                if not batch_idx % 500:
+                    print('Model 2: Simple CNN |Epoch: %03d/%03d | Batch %03d/%03d | Loss: %.6f'
                           % (epoch + 1, self.num_epochs, batch_idx,
                              len(train_input), loss))
             print('Time elapsed: %.2f min' % ((time.time() - start_time) / 60))
@@ -203,7 +205,7 @@ class CNN_Net(nn.Module):
             self.eval()
             # get the training loss and accuracy
             train_predicted = self(train_input)
-            train_loss = self.criterion(train_predicted, train_target)
+            train_loss = self.criterion(train_predicted, train_target).item()
             train_loss_history.append(train_loss)
             _, train_pred = torch.max(train_predicted, 1)  # return the index of the bigger result
             train_accuracy_result = self.compute_accuracy(train_target, train_pred)
@@ -211,7 +213,7 @@ class CNN_Net(nn.Module):
 
             # get the testing loss and accuracy
             test_predicted = self(test_input)
-            test_loss = self.criterion(test_predicted, test_target)
+            test_loss = self.criterion(test_predicted, test_target).item()
             test_loss_history.append(test_loss)
             _, test_pred = torch.max(test_predicted, 1)  # return the index of the bigger result
             test_accuracy_result = self.compute_accuracy(test_target, test_pred)
@@ -219,35 +221,36 @@ class CNN_Net(nn.Module):
 
         print('Total Training Time: %.2f min' % ((time.time() - start_time) / 60))
 
-        # # Setting-up the plot
-        # plt.figure(figsize=(15, 8))
-        #
-        # ax1 = plt.subplot(1, 2, 1)
-        #
-        # ax2 = plt.subplot(1, 2, 2)
-        #
-        # # Drawing and labeling the curves
-        # ax1.plot(train_loss_history, label="Training Loss")
-        # ax1.plot(test_loss_history, label="Test Loss")
-        #
-        # # Adding the title and axis labels
-        # ax1.set_title('Train VS Test Loss')
-        # ax1.set_ylabel('Loss')
-        # ax1.set_xlabel('Epoch')
-        # ax1.legend()
-        #
-        # #     #Saving the plot
-        # #     ax1.figure.savefig(model.model_name+'loss.png')
-        #
-        # # Drawing and labeling the curves
-        # ax2.plot(train_accuracy, label="Train Accuracy")
-        # ax2.plot(test_accuracy, label="Test Accuracy")
-        #
-        # # Adding the title and axis labels
-        # ax2.set_title('Train VS Test Accuracy')
-        # ax2.set_ylabel('Accuracy')
-        # ax2.set_xlabel('Epoch')
-        # ax2.legend()
+        # Setting-up the plot
+        plt.figure(figsize=(15, 8))
+
+        ax1 = plt.subplot(1, 2, 1)
+
+        ax2 = plt.subplot(1, 2, 2)
+
+        # Drawing and labeling the curves
+        ax1.plot(train_loss_history, label="Training Loss")
+        ax1.plot(test_loss_history, label="Test Loss")
+
+        # Adding the title and axis labels
+        ax1.set_title('Train VS Test Loss')
+        ax1.set_ylabel('Loss')
+        ax1.set_xlabel('Epoch')
+        ax1.legend()
+
+        #     #Saving the plot
+        #     ax1.figure.savefig(model.model_name+'loss.png')
+
+        # Drawing and labeling the curves
+        ax2.plot(train_accuracy, label="Train Accuracy")
+        ax2.plot(test_accuracy, label="Test Accuracy")
+
+        # Adding the title and axis labels
+        ax2.set_title('Train VS Test Accuracy')
+        ax2.set_ylabel('Accuracy')
+        ax2.set_xlabel('Epoch')
+        ax2.legend()
+        plt.savefig('./figure/model2_loss_accuracy.png')
 
         # Test error
 
@@ -326,8 +329,8 @@ class CNN_one_by_one_Net(nn.Module):
                 loss.backward()  # backpropagate
                 self.optimizer.step()
                 #                 Every 50 data, output loss once
-                if not batch_idx % 50:
-                    print('Epoch: %03d/%03d | Batch %03d/%03d | Loss: %.6f'
+                if not batch_idx % 500:
+                    print('Model 3 CNN_one_by_one_Net | Epoch: %03d/%03d | Batch %03d/%03d | Loss: %.6f'
                           % (epoch + 1, self.num_epochs, batch_idx,
                              len(train_input), loss))
             print('Time elapsed: %.2f min' % ((time.time() - start_time) / 60))
@@ -442,8 +445,8 @@ class CNN_Net_weight_sharing(nn.Module):
                 loss.backward()  # backpropagation
                 self.optimizer.step()
                 # print the loss in every 50 epoch
-                if not batch_idx % 50:
-                    print('Epoch: %03d/%03d | Batch %03d/%03d | Loss: %.6f'
+                if not batch_idx % 500:
+                    print('Model 5: CNN_Net_weight_sharing | Epoch: %03d/%03d | Batch %03d/%03d | Loss: %.6f'
                           % (epoch + 1, self.num_epochs, batch_idx,
                              len(train_input), loss))
             print('Time elapsed: %.2f min' % ((time.time() - start_time) / 60))
@@ -452,7 +455,7 @@ class CNN_Net_weight_sharing(nn.Module):
             self.eval()
             # get the training loss and accuracy
             train_predicted = self(train_input)
-            train_loss = self.criterion(train_predicted, train_target)
+            train_loss = self.criterion(train_predicted, train_target).item()
             train_loss_history.append(train_loss)
             _, train_pred = torch.max(train_predicted, 1)  # return the index of the bigger result
             train_accuracy_result = self.compute_accuracy(train_target, train_pred)
@@ -460,7 +463,7 @@ class CNN_Net_weight_sharing(nn.Module):
 
             # get the testing loss and accuracy
             test_predicted = self(test_input)
-            test_loss = self.criterion(test_predicted, test_target)
+            test_loss = self.criterion(test_predicted, test_target).item()
             test_loss_history.append(test_loss)
             _, test_pred = torch.max(test_predicted, 1)  # return the index of the bigger result
             test_accuracy_result = self.compute_accuracy(test_target, test_pred)
@@ -468,35 +471,36 @@ class CNN_Net_weight_sharing(nn.Module):
 
         print('Total Training Time: %.2f min' % ((time.time() - start_time) / 60))
 
-        # # Setting-up the plot
-        # plt.figure(figsize=(15, 8))
-        #
-        # ax1 = plt.subplot(1, 2, 1)
-        #
-        # ax2 = plt.subplot(1, 2, 2)
-        #
-        # # Drawing and labeling the curves
-        # ax1.plot(train_loss_history, label="Training Loss")
-        # ax1.plot(test_loss_history, label="Test Loss")
-        #
-        # # Adding the title and axis labels
-        # ax1.set_title('Train VS Test Loss')
-        # ax1.set_ylabel('Loss')
-        # ax1.set_xlabel('Epoch')
-        # ax1.legend()
-        #
-        # #     #Saving the plot
-        # #     ax1.figure.savefig(model.model_name+'loss.png')
-        #
-        # # Drawing and labeling the curves
-        # ax2.plot(train_accuracy, label="Train Accuracy")
-        # ax2.plot(test_accuracy, label="Test Accuracy")
-        #
-        # # Adding the title and axis labels
-        # ax2.set_title('Train VS Test Accuracy')
-        # ax2.set_ylabel('Accuracy')
-        # ax2.set_xlabel('Epoch')
-        # ax2.legend()
+        # Setting-up the plot
+        plt.figure(figsize=(15, 8))
+
+        ax1 = plt.subplot(1, 2, 1)
+
+        ax2 = plt.subplot(1, 2, 2)
+
+        # Drawing and labeling the curves
+        ax1.plot(train_loss_history, label="Training Loss")
+        ax1.plot(test_loss_history, label="Test Loss")
+
+        # Adding the title and axis labels
+        ax1.set_title('Train VS Test Loss')
+        ax1.set_ylabel('Loss')
+        ax1.set_xlabel('Epoch')
+        ax1.legend()
+
+        #     #Saving the plot
+        #     ax1.figure.savefig(model.model_name+'loss.png')
+
+        # Drawing and labeling the curves
+        ax2.plot(train_accuracy, label="Train Accuracy")
+        ax2.plot(test_accuracy, label="Test Accuracy")
+
+        # Adding the title and axis labels
+        ax2.set_title('Train VS Test Accuracy')
+        ax2.set_ylabel('Accuracy')
+        ax2.set_xlabel('Epoch')
+        ax2.legend()
+        plt.savefig('./figure/model5_loss_accuracy.png')
 
         # Test error
 
@@ -619,8 +623,8 @@ class CNN_Net_weight_sharing_auxiliary_loss(nn.Module):
                 loss.backward()
                 self.optimizer.step()
                 #                 every 50 batch_idx, output the loss
-                if not batch_idx % 50:
-                    print('Epoch: %03d/%03d | Batch %03d/%03d | Loss: %.6f'
+                if not batch_idx % 500:
+                    print('Model 6: CNN_Net_weight_sharing_auxiliary_loss | Epoch: %03d/%03d | Batch %03d/%03d | Loss: %.6f'
                           % (epoch + 1, self.num_epochs, batch_idx,
                              len(train_input), loss))
             # test mode
@@ -631,7 +635,7 @@ class CNN_Net_weight_sharing_auxiliary_loss(nn.Module):
                                                                                               train_classes[:,
                                                                                               0]) + 0.5 * self.criterion(
                 train_output2, train_classes[:, 1])
-            train_loss_history.append(train_loss)
+            train_loss_history.append(train_loss.item())
             _, train_pred = torch.max(train_predicted, 1)  # return the index of the bigger result
             train_accuracy_result = self.compute_accuracy(train_target, train_pred)
             train_accuracy.append(train_accuracy_result)
@@ -641,7 +645,7 @@ class CNN_Net_weight_sharing_auxiliary_loss(nn.Module):
             test_loss = self.criterion(test_predicted, test_target) + 0.5 * self.criterion(test_output1, test_classes[:,
                                                                                                          0]) + 0.5 * self.criterion(
                 test_output2, test_classes[:, 1])
-            test_loss_history.append(test_loss)
+            test_loss_history.append(test_loss.item())
             _, test_pred = torch.max(test_predicted, 1)  # return the index of the bigger result
             test_accuracy_result = self.compute_accuracy(test_target, test_pred)
             test_accuracy.append(test_accuracy_result)
@@ -653,39 +657,37 @@ class CNN_Net_weight_sharing_auxiliary_loss(nn.Module):
         # plot the accuracy and loss figure
         # Plotting the train and test loss and accuracy figure
 
-        # # Setting-up the plot
-        # plt.figure(figsize=(15, 8))
-        #
-        # ax1 = plt.subplot(1, 2, 1)
-        #
-        # ax2 = plt.subplot(1, 2, 2)
-        #
-        # # Drawing and labeling the curves
-        # ax1.plot(train_loss_history, label="Training Loss")
-        # ax1.plot(test_loss_history, label="Test Loss")
-        #
-        # # Adding the title and axis labels
-        # ax1.set_title('Train VS Test Loss')
-        # ax1.set_ylabel('Loss')
-        # ax1.set_xlabel('Epoch')
-        # ax1.legend()
-        #
-        # #     #Saving the plot
-        # #     ax1.figure.savefig(model.model_name+'loss.png')
-        #
-        # # Drawing and labeling the curves
-        # ax2.plot(train_accuracy, label="Train Accuracy")
-        # ax2.plot(test_accuracy, label="Test Accuracy")
-        #
-        # # Adding the title and axis labels
-        # ax2.set_title('Train VS Test Accuracy')
-        # ax2.set_ylabel('Accuracy')
-        # ax2.set_xlabel('Epoch')
-        # ax2.legend()
-        #
-        # # Saving the plot
-        # #     ax2.figure.savefig(model.model_name+'accuracy.png')
-        # plt.savefig('accuracy_loss.png')
+        # Setting-up the plot
+        plt.figure(figsize=(15, 8))
+
+        ax1 = plt.subplot(1, 2, 1)
+
+        ax2 = plt.subplot(1, 2, 2)
+
+        # Drawing and labeling the curves
+        ax1.plot(train_loss_history, label="Training Loss")
+        ax1.plot(test_loss_history, label="Test Loss")
+
+        # Adding the title and axis labels
+        ax1.set_title('Train VS Test Loss')
+        ax1.set_ylabel('Loss')
+        ax1.set_xlabel('Epoch')
+        ax1.legend()
+
+        #     #Saving the plot
+        #     ax1.figure.savefig(model.model_name+'loss.png')
+
+        # Drawing and labeling the curves
+        ax2.plot(train_accuracy, label="Train Accuracy")
+        ax2.plot(test_accuracy, label="Test Accuracy")
+
+        # Adding the title and axis labels
+        ax2.set_title('Train VS Test Accuracy')
+        ax2.set_ylabel('Accuracy')
+        ax2.set_xlabel('Epoch')
+        ax2.legend()
+        #save the image
+        plt.savefig('./figure/model6_loss_accuracy.png')
 
         # Test error
 

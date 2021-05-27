@@ -163,11 +163,9 @@ def train_model(model, train_input, train_target, test_input, test_target, learn
     # plt.show()
     # plt.close(fig)
 
-
-def compute_accuracy(true_target, predicted):
-    return (true_target - (predicted > 0.5).float()).eq(0).float().mean().item()
-
-
+# If predicted > 0.5,then the output is true, convert true to 1,
+# false to 0. If target and predicted is the same, then return true, and
+# and convert true to 1. compute the mean to get the accuracy.
 def compute_accuracy(true_target, predicted):
     return (true_target - (predicted > 0.5).float()).eq(0).float().mean().item()
 
